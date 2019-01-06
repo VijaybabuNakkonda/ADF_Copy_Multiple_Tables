@@ -5,4 +5,4 @@ Followed Microsoft article to create ADF pipe line to copy multiple tables into 
 
 https://docs.microsoft.com/en-us/azure/data-factory/tutorial-bulk-copy-portal
 
-From Azure Data factory a direct version in checked in GitHub.
+From Azure Data factory a direct version is checked in GitHub.
