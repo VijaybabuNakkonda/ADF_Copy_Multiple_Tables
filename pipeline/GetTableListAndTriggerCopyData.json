@@ -1,0 +1,54 @@
+{
+	"name": "GetTableListAndTriggerCopyData",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetTableList",
+				"type": "Lookup",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "SqlSource",
+						"sqlReaderQuery": "SELECT upper(TABLE_SCHEMA) Table_Schema,  upper(TABLE_NAME) Table_Name FROM information_schema.TABLES"
+					},
+					"dataset": {
+						"referenceName": "SQL_DB_Table",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Call_Copy_Multiple",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "GetTableList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_Multiple_Tables",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"tablelist": {
+							"value": "@activity('GetTableList').output.value",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

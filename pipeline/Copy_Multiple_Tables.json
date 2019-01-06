@@ -1,0 +1,72 @@
+{
+	"name": "Copy_Multiple_Tables",
+	"properties": {
+		"description": "Copies multiple SQL Tables to blob storage",
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.tablelist",
+						"type": "Expression"
+					},
+					"batchCount": 10,
+					"activities": [
+						{
+							"name": "Copy Data1",
+							"type": "Copy",
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"source": {
+									"type": "SqlSource"
+								},
+								"sink": {
+									"type": "BlobSink"
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": 0
+							},
+							"inputs": [
+								{
+									"referenceName": "SQL_DB_Table",
+									"type": "DatasetReference",
+									"parameters": {
+										"Table_Name": {
+											"value": "[@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureBlobStorage",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@{item().TABLE_SCHEMA}.@{item().TABLE_NAME}.csv",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"tablelist": {
+				"type": "Array"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

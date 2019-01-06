@@ -1,0 +1,23 @@
+{
+	"name": "SQL_DB_Table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Table_Name": {
+				"type": "String",
+				"defaultValue": "[SalesLT].[Address]"
+			}
+		},
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().Table_Name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
