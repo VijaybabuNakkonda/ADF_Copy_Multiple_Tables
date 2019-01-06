@@ -1,0 +1,77 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "nklab"
+		},
+		"AzureSqlDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDB'"
+		},
+		"nklabblob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'nklabblob'"
+		},
+		"nklabdb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'nklabdb'"
+		},
+		"AzureBlobStorage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().TableName"
+		},
+		"AzureBlobStorage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "csvfiles"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas Token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDB_connectionString": {
+						"value": "[parameters('AzureSqlDB_connectionString')]"
+					},
+					"nklabblob_connectionString": {
+						"value": "[parameters('nklabblob_connectionString')]"
+					},
+					"nklabdb_connectionString": {
+						"value": "[parameters('nklabdb_connectionString')]"
+					},
+					"AzureBlobStorage_properties_typeProperties_fileName": {
+						"value": "[parameters('AzureBlobStorage_properties_typeProperties_fileName')]"
+					},
+					"AzureBlobStorage_properties_typeProperties_folderPath": {
+						"value": "[parameters('AzureBlobStorage_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
